@@ -134,6 +134,10 @@ class GameActivity : Activity() {
         }
 
         showQuestion()
+        if (GameConnection.isConnected && !GameConnection.isHost) {
+    listenForHostQuestions()
+        }
+        
     }
 
     private fun showQuestion() {
@@ -169,6 +173,17 @@ class GameActivity : Activity() {
 
         for (button in answerButtons) {
             button.isEnabled = false
+            if (GameConnection.isConnected && GameConnection.isHost) {
+    try {
+        GameConnection.send("Q|$currentQuestion")
+    } catch (e: Exception) {
+        scoreText.text = "ارتباط با مهمان قطع شد"
+    }
+}
+
+if (GameConnection.isConnected && !GameConnection.isHost) {
+    nextButton.isEnabled = false
+}
         }
 
         nextButton.isEnabled = true
@@ -201,5 +216,33 @@ class GameActivity : Activity() {
         layout.addView(finishButton)
 
         setContentView(layout)
+    }
+    private fun listenForHostQuestions() {
+    Thread {
+        try {
+            while (!isFinishing) {
+                val message = GameConnection.receive() ?: break
+
+                val parts = message.split("|")
+
+                if (parts.size == 2 && parts[0] == "Q") {
+                    val index = parts[1].toIntOrNull() ?: continue
+
+                    if (index in questions.indices) {
+                        runOnUiThread {
+                            currentQuestion = index
+                            showQuestion()
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            runOnUiThread {
+                if (!isFinishing) {
+                    scoreText.text = "ارتباط با میزبان قطع شد"
+                }
+            }
+        }
+    }.start()
     }
 }
