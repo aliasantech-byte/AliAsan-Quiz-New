@@ -1,3 +1,4 @@
+
 package com.aliasantech.quiz
 
 import android.app.Activity
@@ -9,9 +10,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
+import java.net.Socket
 
 class GuestActivity : Activity() {
+
+    private lateinit var statusText: TextView
+    private lateinit var ipInput: EditText
 
     private fun dp(value: Int): Int {
         return (value * resources.displayMetrics.density).toInt()
@@ -32,7 +36,7 @@ class GuestActivity : Activity() {
         title.setTextColor(Color.WHITE)
         title.gravity = Gravity.CENTER
 
-        val ipInput = EditText(this)
+        ipInput = EditText(this)
         ipInput.hint = "آدرس IP میزبان را وارد کنید"
         ipInput.setSingleLine(true)
         ipInput.inputType = 0x00001001
@@ -40,11 +44,11 @@ class GuestActivity : Activity() {
         val connectButton = Button(this)
         connectButton.text = "اتصال به میزبان"
 
-        val info = TextView(this)
-        info.text = "آدرس IP را از گوشی میزبان دریافت کنید."
-        info.textSize = 16f
-        info.setTextColor(Color.LTGRAY)
-        info.gravity = Gravity.CENTER
+        statusText = TextView(this)
+        statusText.text = "هر دو گوشی باید به یک Wi-Fi متصل باشند."
+        statusText.textSize = 16f
+        statusText.setTextColor(Color.LTGRAY)
+        statusText.gravity = Gravity.CENTER
 
         layout.addView(title)
 
@@ -55,9 +59,8 @@ class GuestActivity : Activity() {
             )
         )
 
-        layout.addView(info)
-
         layout.addView(connectButton)
+        layout.addView(statusText)
 
         setContentView(layout)
 
@@ -66,13 +69,41 @@ class GuestActivity : Activity() {
 
             if (ip.isEmpty()) {
                 ipInput.error = "آدرس IP را وارد کنید"
-            } else {
-                Toast.makeText(
-                    this,
-                    "اتصال در مرحله بعد فعال می‌شود",
-                    Toast.LENGTH_SHORT
-                ).show()
+                return@setOnClickListener
             }
+
+            connectButton.isEnabled = false
+            statusText.text = "در حال اتصال..."
+
+            Thread {
+                var socket: Socket? = null
+
+                try {
+                    socket = Socket(ip, 5050)
+
+                    runOnUiThread {
+                        statusText.text = "اتصال به میزبان موفق بود!"
+                    }
+
+                    // اتصال فعلاً آزمایشی است.
+                    // ارتباط تا زمان بسته‌شدن صفحه برقرار می‌ماند.
+
+                    while (!socket.isClosed) {
+                        Thread.sleep(500)
+                    }
+
+                } catch (e: Exception) {
+                    runOnUiThread {
+                        statusText.text = "اتصال ناموفق بود؛ IP و Wi-Fi را بررسی کن."
+                        connectButton.isEnabled = true
+                    }
+                } finally {
+                    try {
+                        socket?.close()
+                    } catch (e: Exception) {
+                    }
+                }
+            }.start()
         }
     }
 }
