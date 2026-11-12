@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -5,6 +6,14 @@
         android:allowBackup="false"
         android:label="مسابقه هوش علی آسان"
         android:theme="@android:style/Theme.Holo.Light.NoActionBar">
+
+        <activity
+            android:name=".HostActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".GuestActivity"
+            android:exported="false" />
 
         <activity
             android:name=".MainActivity"
