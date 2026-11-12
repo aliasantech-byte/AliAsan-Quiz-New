@@ -17,6 +17,8 @@ object GameConnection {
 
     @Volatile
     var isHost: Boolean = false
+    val isConnected: Boolean
+    get() = socket?.let { it.isConnected && !it.isClosed } == true
 
     @Synchronized
     fun connect(newSocket: Socket, host: Boolean) {
