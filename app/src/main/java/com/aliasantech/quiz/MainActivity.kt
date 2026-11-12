@@ -44,6 +44,9 @@ class MainActivity : Activity() {
         val guestButton = Button(this)
         guestButton.text = "ورود به بازی (مهمان)"
 
+        val testButton = Button(this)
+        testButton.text = "آزمایش مسابقه (بدون اتصال)"
+
         layout.addView(title)
         layout.addView(subtitle)
 
@@ -61,6 +64,13 @@ class MainActivity : Activity() {
             )
         )
 
+        layout.addView(testButton,
+            LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                dp(60)
+            )
+        )
+
         setContentView(layout)
 
         hostButton.setOnClickListener {
@@ -69,6 +79,10 @@ class MainActivity : Activity() {
 
         guestButton.setOnClickListener {
             startActivity(Intent(this, GuestActivity::class.java))
+        }
+
+        testButton.setOnClickListener {
+            startActivity(Intent(this, GameActivity::class.java))
         }
     }
 }
