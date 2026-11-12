@@ -1,4 +1,4 @@
-l
+
 package com.aliasantech.quiz
 
 import android.app.Activity
