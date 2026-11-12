@@ -1,3 +1,4 @@
+
 package com.aliasantech.quiz
 
 import android.app.Activity
@@ -10,8 +11,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import java.net.NetworkInterface
 import java.net.Inet4Address
+import java.net.ServerSocket
 
 class HostActivity : Activity() {
+
+    private var serverSocket: ServerSocket? = null
+    private lateinit var statusText: TextView
 
     private fun dp(value: Int): Int {
         return (value * resources.displayMetrics.density).toInt()
@@ -57,32 +62,64 @@ class HostActivity : Activity() {
         title.gravity = Gravity.CENTER
 
         val ipText = TextView(this)
-        ipText.text = "آدرس IP گوشی:\n${getLocalIp()}"
+        ipText.text = "آدرس IP گوشی:\n${getLocalIp()}\nپورت: 5050"
         ipText.textSize = 20f
         ipText.setTextColor(Color.YELLOW)
         ipText.gravity = Gravity.CENTER
 
-        val info = TextView(this)
-        info.text = "برای اتصال، هر دو گوشی باید به یک شبکه Wi-Fi متصل باشند."
-        info.textSize = 16f
-        info.setTextColor(Color.LTGRAY)
-        info.gravity = Gravity.CENTER
+        statusText = TextView(this)
+        statusText.text = "هنوز سرور شروع نشده است"
+        statusText.textSize = 16f
+        statusText.setTextColor(Color.LTGRAY)
+        statusText.gravity = Gravity.CENTER
 
         val startButton = Button(this)
-        startButton.text = "شروع مسابقه"
-        startButton.isEnabled = false
+        startButton.text = "روشن کردن میزبان"
 
         layout.addView(title)
         layout.addView(ipText)
-        layout.addView(info)
-
-        layout.addView(startButton,
-            LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                dp(60)
-            )
-        )
+        layout.addView(statusText)
+        layout.addView(startButton)
 
         setContentView(layout)
+
+        startButton.setOnClickListener {
+            startButton.isEnabled = false
+            statusText.text = "در حال آماده‌سازی سرور..."
+
+            Thread {
+                try {
+                    val socket = ServerSocket(5050)
+                    serverSocket = socket
+
+                    runOnUiThread {
+                        statusText.text = "سرور روشن است؛ منتظر گوشی مهمان..."
+                    }
+
+                    val client = socket.accept()
+
+                    runOnUiThread {
+                        statusText.text = "یک گوشی به میزبان وصل شد!"
+                    }
+
+                    client.close()
+
+                } catch (e: Exception) {
+                    runOnUiThread {
+                        statusText.text = "خطا در راه‌اندازی سرور"
+                        startButton.isEnabled = true
+                    }
+                }
+            }.start()
+        }
+    }
+
+    override fun onDestroy() {
+        try {
+            serverSocket?.close()
+        } catch (e: Exception) {
+        }
+
+        super.onDestroy()
     }
 }
