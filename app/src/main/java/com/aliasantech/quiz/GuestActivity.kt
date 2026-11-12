@@ -93,6 +93,7 @@ class GuestActivity : Activity() {
             try {
                 val socket = Socket(ip, 5050)
                 clientSocket = socket
+                GameConnection.connect(socket, false)
 
                 runOnUiThread {
                     statusText.text = "اتصال موفق بود!"
