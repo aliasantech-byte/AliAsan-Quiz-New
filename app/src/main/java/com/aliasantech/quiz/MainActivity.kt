@@ -3,13 +3,13 @@ package com.aliasantech.quiz
 
 import android.app.Activity
 import android.os.Bundle
+import android.content.Intent
 import android.graphics.Color
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 
 class MainActivity : Activity() {
 
@@ -45,7 +45,6 @@ class MainActivity : Activity() {
         guestButton.text = "ورود به بازی (مهمان)"
 
         layout.addView(title)
-
         layout.addView(subtitle)
 
         layout.addView(hostButton,
@@ -65,19 +64,11 @@ class MainActivity : Activity() {
         setContentView(layout)
 
         hostButton.setOnClickListener {
-            Toast.makeText(
-                this,
-                "بخش میزبان در مرحله بعد فعال می‌شود",
-                Toast.LENGTH_SHORT
-            ).show()
+            startActivity(Intent(this, HostActivity::class.java))
         }
 
         guestButton.setOnClickListener {
-            Toast.makeText(
-                this,
-                "بخش مهمان در مرحله بعد فعال می‌شود",
-                Toast.LENGTH_SHORT
-            ).show()
+            startActivity(Intent(this, GuestActivity::class.java))
         }
     }
 }
