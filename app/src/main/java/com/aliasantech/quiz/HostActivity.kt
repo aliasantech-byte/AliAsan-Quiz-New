@@ -1,8 +1,9 @@
-
+l
 package com.aliasantech.quiz
 
 import android.app.Activity
 import android.os.Bundle
+import android.content.Intent
 import android.graphics.Color
 import android.view.Gravity
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ class HostActivity : Activity() {
 
     private var serverSocket: ServerSocket? = null
     private var clientSocket: Socket? = null
+
     private lateinit var statusText: TextView
     private lateinit var startButton: Button
 
@@ -96,13 +98,18 @@ class HostActivity : Activity() {
                     serverSocket = socket
 
                     runOnUiThread {
-                        statusText.text = "سرور روشن است؛ منتظر گوشی مهمان..."
+                        statusText.text =
+                            "سرور روشن است؛ منتظر گوشی مهمان..."
                     }
 
                     clientSocket = socket.accept()
 
                     runOnUiThread {
                         statusText.text = "یک گوشی به میزبان وصل شد!"
+
+                        startActivity(
+                            Intent(this, GameActivity::class.java)
+                        )
                     }
 
                 } catch (e: Exception) {
