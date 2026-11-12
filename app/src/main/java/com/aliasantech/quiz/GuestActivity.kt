@@ -3,6 +3,7 @@ package com.aliasantech.quiz
 
 import android.app.Activity
 import android.os.Bundle
+import android.content.Intent
 import android.graphics.Color
 import android.view.Gravity
 import android.view.ViewGroup
@@ -16,6 +17,10 @@ class GuestActivity : Activity() {
 
     private lateinit var statusText: TextView
     private lateinit var ipInput: EditText
+    private lateinit var connectButton: Button
+
+    private var clientSocket: Socket? = null
+    private var connecting = false
 
     private fun dp(value: Int): Int {
         return (value * resources.displayMetrics.density).toInt()
@@ -41,7 +46,7 @@ class GuestActivity : Activity() {
         ipInput.setSingleLine(true)
         ipInput.inputType = 0x00001001
 
-        val connectButton = Button(this)
+        connectButton = Button(this)
         connectButton.text = "اتصال به میزبان"
 
         statusText = TextView(this)
@@ -52,7 +57,8 @@ class GuestActivity : Activity() {
 
         layout.addView(title)
 
-        layout.addView(ipInput,
+        layout.addView(
+            ipInput,
             LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 dp(60)
@@ -65,45 +71,53 @@ class GuestActivity : Activity() {
         setContentView(layout)
 
         connectButton.setOnClickListener {
-            val ip = ipInput.text.toString().trim()
-
-            if (ip.isEmpty()) {
-                ipInput.error = "آدرس IP را وارد کنید"
-                return@setOnClickListener
-            }
-
-            connectButton.isEnabled = false
-            statusText.text = "در حال اتصال..."
-
-            Thread {
-                var socket: Socket? = null
-
-                try {
-                    socket = Socket(ip, 5050)
-
-                    runOnUiThread {
-                        statusText.text = "اتصال به میزبان موفق بود!"
-                    }
-
-                    // اتصال فعلاً آزمایشی است.
-                    // ارتباط تا زمان بسته‌شدن صفحه برقرار می‌ماند.
-
-                    while (!socket.isClosed) {
-                        Thread.sleep(500)
-                    }
-
-                } catch (e: Exception) {
-                    runOnUiThread {
-                        statusText.text = "اتصال ناموفق بود؛ IP و Wi-Fi را بررسی کن."
-                        connectButton.isEnabled = true
-                    }
-                } finally {
-                    try {
-                        socket?.close()
-                    } catch (e: Exception) {
-                    }
-                }
-            }.start()
+            connectToHost()
         }
+    }
+
+    private fun connectToHost() {
+        val ip = ipInput.text.toString().trim()
+
+        if (ip.isEmpty()) {
+            ipInput.error = "آدرس IP را وارد کنید"
+            return
+        }
+
+        if (connecting) return
+
+        connecting = true
+        connectButton.isEnabled = false
+        statusText.text = "در حال اتصال..."
+
+        Thread {
+            try {
+                val socket = Socket(ip, 5050)
+                clientSocket = socket
+
+                runOnUiThread {
+                    statusText.text = "اتصال موفق بود!"
+
+                    startActivity(
+                        Intent(this, GameActivity::class.java)
+                    )
+                }
+
+            } catch (e: Exception) {
+                runOnUiThread {
+                    statusText.text = "اتصال ناموفق بود؛ IP و Wi-Fi را بررسی کن."
+                    connectButton.isEnabled = true
+                    connecting = false
+                }
+            }
+        }.start()
+    }
+
+    override fun onDestroy() {
+        try {
+            clientSocket?.close()
+        } catch (e: Exception) {
+        }
+
+        super.onDestroy()
     }
 }
