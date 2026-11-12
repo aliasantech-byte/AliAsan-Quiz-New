@@ -1,12 +1,15 @@
+
 package com.aliasantech.quiz
 
 import android.app.Activity
 import android.os.Bundle
 import android.graphics.Color
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 
 class GameActivity : Activity() {
@@ -18,65 +21,26 @@ class GameActivity : Activity() {
     )
 
     private val questions = listOf(
-        Question("کدام سیاره به خورشید نزدیک‌تر است؟",
-            listOf("زمین", "مریخ", "عطارد", "زهره"), 2),
-
-        Question("حاصل ۸ × ۷ چند است؟",
-            listOf("۵۴", "۵۶", "۶۴", "۴۸"), 1),
-
-        Question("پایتخت ایران کدام شهر است؟",
-            listOf("شیراز", "اصفهان", "تهران", "تبریز"), 2),
-
-        Question("کدام حیوان پستاندار است؟",
-            listOf("کوسه", "دلفین", "تمساح", "مار"), 1),
-
-        Question("یک ساعت چند دقیقه است؟",
-            listOf("۳۰", "۴۵", "۶۰", "۹۰"), 2),
-
-        Question("کدام رنگ از ترکیب آبی و زرد ساخته می‌شود؟",
-            listOf("قرمز", "سبز", "بنفش", "نارنجی"), 1),
-
-        Question("بزرگ‌ترین قاره جهان کدام است؟",
-            listOf("آفریقا", "اروپا", "آسیا", "استرالیا"), 2),
-
-        Question("کدام عدد زوج است؟",
-            listOf("۷", "۹", "۱۳", "۱۸"), 3),
-
-        Question("آب در دمای معمولی چه حالتی دارد؟",
-            listOf("جامد", "مایع", "گاز", "پلاسما"), 1),
-
-        Question("کدام وسیله برای اندازه‌گیری دماست؟",
-            listOf("خط‌کش", "ترازو", "دماسنج", "قطب‌نما"), 2),
-
-        Question("کدام پرنده نمی‌تواند پرواز کند؟",
-            listOf("عقاب", "شترمرغ", "کبوتر", "گنجشک"), 1),
-
-        Question("حاصل ۱۵ + ۲۵ چند است؟",
-            listOf("۳۰", "۳۵", "۴۰", "۴۵"), 2),
-
-        Question("کدام یک ستاره است؟",
-            listOf("ماه", "زمین", "خورشید", "مریخ"), 2),
-
-        Question("چند ضلع در یک مثلث وجود دارد؟",
-            listOf("۲", "۳", "۴", "۵"), 1),
-
-        Question("کدام زبان برای برنامه‌نویسی اندروید کاربرد دارد؟",
-            listOf("Kotlin", "HTML", "CSS", "SQL"), 0),
-
-        Question("کدام جانور خشکی‌زی است؟",
-            listOf("نهنگ", "دلفین", "فیل", "اختاپوس"), 2),
-
-        Question("حاصل ۱۰۰ تقسیم بر ۱۰ چند است؟",
-            listOf("۵", "۱۰", "۲۰", "۱۰۰"), 1),
-
-        Question("کدام فصل بعد از تابستان می‌آید؟",
-            listOf("بهار", "زمستان", "پاییز", "تابستان"), 2),
-
-        Question("کدام اندام برای دیدن استفاده می‌شود؟",
-            listOf("گوش", "چشم", "بینی", "زبان"), 1),
-
-        Question("یک هفته چند روز دارد؟",
-            listOf("۵", "۶", "۷", "۸"), 2)
+        Question("کدام سیاره به خورشید نزدیک‌تر است؟", listOf("زمین", "مریخ", "عطارد", "زهره"), 2),
+        Question("حاصل ۸ × ۷ چند است؟", listOf("۵۴", "۵۶", "۶۴", "۴۸"), 1),
+        Question("پایتخت ایران کدام شهر است؟", listOf("شیراز", "اصفهان", "تهران", "تبریز"), 2),
+        Question("کدام حیوان پستاندار است؟", listOf("کوسه", "دلفین", "تمساح", "مار"), 1),
+        Question("یک ساعت چند دقیقه است؟", listOf("۳۰", "۴۵", "۶۰", "۹۰"), 2),
+        Question("کدام رنگ از ترکیب آبی و زرد ساخته می‌شود؟", listOf("قرمز", "سبز", "بنفش", "نارنجی"), 1),
+        Question("بزرگ‌ترین قاره جهان کدام است؟", listOf("آفریقا", "اروپا", "آسیا", "استرالیا"), 2),
+        Question("کدام عدد زوج است؟", listOf("۷", "۹", "۱۳", "۱۸"), 3),
+        Question("آب در دمای معمولی چه حالتی دارد؟", listOf("جامد", "مایع", "گاز", "پلاسما"), 1),
+        Question("کدام وسیله برای اندازه‌گیری دماست؟", listOf("خط‌کش", "ترازو", "دماسنج", "قطب‌نما"), 2),
+        Question("کدام پرنده نمی‌تواند پرواز کند؟", listOf("عقاب", "شترمرغ", "کبوتر", "گنجشک"), 1),
+        Question("حاصل ۱۵ + ۲۵ چند است؟", listOf("۳۰", "۳۵", "۴۰", "۴۵"), 2),
+        Question("کدام یک ستاره است؟", listOf("ماه", "زمین", "خورشید", "مریخ"), 2),
+        Question("چند ضلع در یک مثلث وجود دارد؟", listOf("۲", "۳", "۴", "۵"), 1),
+        Question("کدام زبان برای برنامه‌نویسی اندروید کاربرد دارد؟", listOf("Kotlin", "HTML", "CSS", "SQL"), 0),
+        Question("کدام جانور خشکی‌زی است؟", listOf("نهنگ", "دلفین", "فیل", "اختاپوس"), 2),
+        Question("حاصل ۱۰۰ تقسیم بر ۱۰ چند است؟", listOf("۵", "۱۰", "۲۰", "۱۰۰"), 1),
+        Question("کدام فصل بعد از تابستان می‌آید؟", listOf("بهار", "زمستان", "پاییز", "تابستان"), 2),
+        Question("کدام اندام برای دیدن استفاده می‌شود؟", listOf("گوش", "چشم", "بینی", "زبان"), 1),
+        Question("یک هفته چند روز دارد؟", listOf("۵", "۶", "۷", "۸"), 2)
     )
 
     private var currentQuestion = 0
@@ -95,6 +59,8 @@ class GameActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val scroll = ScrollView(this)
 
         val layout = LinearLayout(this)
         layout.orientation = LinearLayout.VERTICAL
@@ -117,6 +83,10 @@ class GameActivity : Activity() {
         scoreText.textSize = 17f
         scoreText.setTextColor(Color.LTGRAY)
         scoreText.gravity = Gravity.CENTER
+
+        layout.addView(progressText)
+        layout.addView(questionText)
+        layout.addView(scoreText)
 
         val buttons = mutableListOf<Button>()
 
@@ -143,10 +113,6 @@ class GameActivity : Activity() {
         nextButton.text = "سؤال بعدی"
         nextButton.isEnabled = false
 
-        layout.addView(progressText)
-        layout.addView(questionText)
-        layout.addView(scoreText)
-
         layout.addView(nextButton,
             LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -154,12 +120,13 @@ class GameActivity : Activity() {
             )
         )
 
-        setContentView(layout)
+        scroll.addView(layout)
+        setContentView(scroll)
 
         nextButton.setOnClickListener {
-            currentQuestion++
-
-            if (currentQuestion < questions.size) {
+            if (currentQuestion < questions.size - 1) {
+                currentQuestion++
+                nextButton.text = "سؤال بعدی"
                 showQuestion()
             } else {
                 showResult()
@@ -174,9 +141,7 @@ class GameActivity : Activity() {
 
         val question = questions[currentQuestion]
 
-        progressText.text =
-            "سؤال ${currentQuestion + 1} از ${questions.size}"
-
+        progressText.text = "سؤال ${currentQuestion + 1} از ${questions.size}"
         questionText.text = question.text
         scoreText.text = "امتیاز: $score"
 
@@ -199,8 +164,7 @@ class GameActivity : Activity() {
             score++
             scoreText.text = "آفرین! پاسخ درست بود. امتیاز: $score"
         } else {
-            scoreText.text =
-                "پاسخ درست: ${questions[currentQuestion].options[correct]}"
+            scoreText.text = "پاسخ درست: ${questions[currentQuestion].options[correct]}"
         }
 
         for (button in answerButtons) {
@@ -239,4 +203,3 @@ class GameActivity : Activity() {
         setContentView(layout)
     }
 }
-
