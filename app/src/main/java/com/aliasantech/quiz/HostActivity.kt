@@ -103,6 +103,7 @@ class HostActivity : Activity() {
                     }
 
                     clientSocket = socket.accept()
+                    GameConnection.connect(clientSocket!!, true)
 
                     runOnUiThread {
                         statusText.text = "یک گوشی به میزبان وصل شد!"
