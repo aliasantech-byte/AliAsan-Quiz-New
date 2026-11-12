@@ -12,11 +12,14 @@ import android.widget.TextView
 import java.net.NetworkInterface
 import java.net.Inet4Address
 import java.net.ServerSocket
+import java.net.Socket
 
 class HostActivity : Activity() {
 
     private var serverSocket: ServerSocket? = null
+    private var clientSocket: Socket? = null
     private lateinit var statusText: TextView
+    private lateinit var startButton: Button
 
     private fun dp(value: Int): Int {
         return (value * resources.displayMetrics.density).toInt()
@@ -73,7 +76,7 @@ class HostActivity : Activity() {
         statusText.setTextColor(Color.LTGRAY)
         statusText.gravity = Gravity.CENTER
 
-        val startButton = Button(this)
+        startButton = Button(this)
         startButton.text = "روشن کردن میزبان"
 
         layout.addView(title)
@@ -96,13 +99,11 @@ class HostActivity : Activity() {
                         statusText.text = "سرور روشن است؛ منتظر گوشی مهمان..."
                     }
 
-                    val client = socket.accept()
+                    clientSocket = socket.accept()
 
                     runOnUiThread {
                         statusText.text = "یک گوشی به میزبان وصل شد!"
                     }
-
-                    client.close()
 
                 } catch (e: Exception) {
                     runOnUiThread {
@@ -116,6 +117,7 @@ class HostActivity : Activity() {
 
     override fun onDestroy() {
         try {
+            clientSocket?.close()
             serverSocket?.close()
         } catch (e: Exception) {
         }
